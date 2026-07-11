@@ -1,11 +1,13 @@
+
+
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <curand.h> // Include the cuRAND library to allow for random vector generation
+#include "vecAdd.h"  // Include the header file for the vecAdd function
 
 // this program performs the vector addition A + B = C for vectors of length 128.
 
-// accepts host pointers to vectors A, B, and C, and the length of the vectors n
-void vecAdd(float* A_h, float* B_h, float* C_h, int n);
+
 
 
 int main() {
@@ -26,36 +28,12 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
     int size = n*sizeof(float); // Size of a vector in bytes
 
     // allocate device memory for vectors A, B, and C
-    cudaError_t err = cudaMalloc((void**)&A_d, size);
-    if (err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
-        exit(EXIT_FAILURE);
-    }
-    err = cudaMalloc((void**)&B_d, size);
-    if (err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
-        exit(EXIT_FAILURE);
-    }
-    err = cudaMalloc((void**)&C_d, size);
-    if (err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
-        exit(EXIT_FAILURE);
-    }
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&A_d, size));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&B_d, size));
+    CUDA_ERROR_CHECK(cudaMalloc((void**)&C_d, size));
 
     // free device memory for vectors A, B, and C
-    err = cudaFree(A_d);
-    if (err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
-        exit(EXIT_FAILURE);
-    }
-    err = cudaFree(B_d);
-    if (err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
-        exit(EXIT_FAILURE);
-    }
-    err = cudaFree(C_d);
-    if (err != cudaSuccess) {
-        printf("%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
-        exit(EXIT_FAILURE);
-    }
+    CUDA_ERROR_CHECK(cudaFree(A_d));
+    CUDA_ERROR_CHECK(cudaFree(B_d));
+    CUDA_ERROR_CHECK(cudaFree(C_d));
 }
