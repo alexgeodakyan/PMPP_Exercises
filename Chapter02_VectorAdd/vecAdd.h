@@ -14,4 +14,6 @@
 // accepts host pointers to vectors A, B, and C, and the length of the vectors n
 void vecAdd(float* A_h, float* B_h, float* C_h, int n);
 
+__global__ void vecAddKernel(float *A, float *B, float* C, int n);
+
 #endif // VECADD_H
