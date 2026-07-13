@@ -5,13 +5,11 @@
 #include "vecAdd.h"  // Include the header file for the vecAdd function
 #include <math.h>
 
-// this program performs the vector addition A + B = C for vectors of length 128.
-
-
+// this program performs the vector addition A + B = C for vectors of length 2^20.
 
 
 int main() {
-    int vectorSize = 1024;
+    int vectorSize = 1 << 20;   // 2^20
 
     float* A_h = (float*) malloc(vectorSize*sizeof(float));
     float* B_h = (float*) malloc(vectorSize*sizeof(float));
@@ -72,6 +70,12 @@ void vecAdd(float* A_h, float* B_h, float* C_h, int n) {
 __global__ void vecAddKernel(float *A, float *B, float* C, int n) {
     int i = threadIdx.x + blockIdx.x*blockDim.x;
     if (i < n) {
-        C[i] = A[i] + B[i];
+        // Old code: slow because it accessed VRAM
+        // C[i] = A[i] + B[i];
+
+        // fix: assign sum to register first
+        float tmp = A[i] + B[i];
+        // then assign to output
+        C[i] = tmp;
     }
 }
